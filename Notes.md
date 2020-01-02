@@ -14,3 +14,25 @@ npm install --save express-graphql graphql
 http://localhost:3000/graphql
 
 Resolvers return everything then graphQL parser picks data requested
+
+Use MongoDB Atlass free cluster tiers
+
+Configure cluster security for access
+Need a user with admin/ReadWrite access
+Determine which servers can connect to the cluster
+    IP Whitelist
+        Add ip address -> add current ip address
+        If deploying to web would need to add that ip address instead
+
+MongoDB- academindgraphQ1
+
+Using mongoose to interact with graphql
+    3rd party lib installed from npm
+    allows to manage data through JS objects
+        -> translates objects to queries
+
+`mongoose.connect()` -> GOTO the cluseter -> connect -> connect your application -> short svr connection string
+Interpolate in the user/password to the connection string
+
+View `collections` in MongoDB database to see your data
+If that isn't available try MongoDB Compass
