@@ -10,3 +10,7 @@ npm install --save-dev nodemon
 create app.js
 
 npm install --save express-graphql graphql
+
+http://localhost:3000/graphql
+
+Resolvers return everything then graphQL parser picks data requested
