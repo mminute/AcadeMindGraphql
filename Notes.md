@@ -36,3 +36,10 @@ Interpolate in the user/password to the connection string
 
 View `collections` in MongoDB database to see your data
 If that isn't available try MongoDB Compass
+
+`npm inatall --save bcryptjs` Password hashing
+
+If: `MongoNetworkError: failed to connect to server [academindgraphqlapp-shard-00-01-zqtqo.mongodb.net:27017] on first connect`
+Whitelist your current IP address
+
+Can use mongoDB relations to created/update related object (user owns an event)?
