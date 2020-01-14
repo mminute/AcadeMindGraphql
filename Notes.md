@@ -43,3 +43,7 @@ If: `MongoNetworkError: failed to connect to server [academindgraphqlapp-shard-0
 Whitelist your current IP address
 
 Can use mongoDB relations to created/update related object (user owns an event)?
+
+`Event.find().populate('creator')` uses `ref` on models to pull in extra desired data
+
+`Event.find({ _id: { $in: eventIds } })` $in mongoDB operator
