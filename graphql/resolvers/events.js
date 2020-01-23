@@ -12,7 +12,11 @@ module.exports = {
       throw err;
     }
   },
-  createEvent: async (args) => {
+  createEvent: async (args, req) => {
+    if (!req.isAuth) {
+      throw new Error('Unauthenticated');
+    }
+
     try {
       const { title, description, price, date } = args.eventInput;
 
@@ -21,7 +25,7 @@ module.exports = {
         description: description,
         price: +price,
         date: new Date(date),
-        creator: '5e1d5e9f8292193d8cadaa94',
+        creator: req.userId,
       });
 
       let createdEvent;

@@ -49,3 +49,24 @@ Can use mongoDB relations to created/update related object (user owns an event)?
 `Event.find({ _id: { $in: eventIds } })` $in mongoDB operator
 
 `new Schema({}, { timestamps: true })` mongoose automatically adds createdAt and updatedAt timestamps
+
+`npm install --save jsonwebtoken` package to generate json web tokens for authentication
+    jwt.sign({ ...data to put into the token - ex) email, userId }, 'string used to hash the token and validation - private key', { ...optional token configuration object, expiresIn: '1h' })
+
+To test that authentication middleware has locked down resolvers as expected:
+Get token when logging in
+use postman to send a POST request to the endpoint
+On request -> BODY -> set to 'raw' and format to json
+```
+{
+    "query": "query { login(email: \"test@test.com\", password: \"tester\") { token } }"
+}
+```
+
+To use authentication token:
+In postman headers for request add: `Authorization` key and as the value `Bearer thisIsTheKeyFromAbove`
+```
+{
+    "query": "mutation { createEvent(eventInput: { title: \"Should work\", description: \"this should work\", price: 39.99, date: \"2020-01-23T16:49:43.458Z\" }) { id title } }"
+}
+```
