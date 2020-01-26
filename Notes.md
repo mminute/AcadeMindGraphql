@@ -70,3 +70,9 @@ In postman headers for request add: `Authorization` key and as the value `Bearer
     "query": "mutation { createEvent(eventInput: { title: \"Should work\", description: \"this should work\", price: 39.99, date: \"2020-01-23T16:49:43.458Z\" }) { id title } }"
 }
 ```
+
+Starting the frontend!
+create-react-app
+Create `/frontend` directory, cd into it, `npx create-react-app .`to create a new project with `/frontend` as the top level
+In `/frontend` run npm start to run start script int frontend/package.json file
+To add routing we are using `npm install --save react-router-dom`
