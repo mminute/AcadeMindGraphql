@@ -76,3 +76,12 @@ create-react-app
 Create `/frontend` directory, cd into it, `npx create-react-app .`to create a new project with `/frontend` as the top level
 In `/frontend` run npm start to run start script int frontend/package.json file
 To add routing we are using `npm install --save react-router-dom`
+
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+BrowserRouter contains all possible routes
+Switch ensures that only one route is rendered at a time?
+Route takes a route and a component to render
+Redirect does what it says
+NavLink renders anchor tag but handles click events so that a real navigation is not triggered
+
+NavLink component adds an `active` class to link for the current route
