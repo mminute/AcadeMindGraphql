@@ -11,6 +11,21 @@ const app = express();
 
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  // Allow cross origin requests
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Allow access to every client location/domain
+  res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
+  // which kind of headers can be set for request sent to server
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
+  next();
+})
+
 // Adds request.isAuth to every incoming request going to every resolver
 app.use(isAuth);
 
@@ -28,7 +43,7 @@ mongoose.connect(
     useNewUrlParser: true,
   },
 ).then(() => {
-  app.listen(3000);
+  app.listen(8000);
 }).catch(err => {
   console.log(err);
 })

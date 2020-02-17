@@ -85,3 +85,5 @@ Redirect does what it says
 NavLink renders anchor tag but handles click events so that a real navigation is not triggered
 
 NavLink component adds an `active` class to link for the current route
+
+Set headers to allow CORS
