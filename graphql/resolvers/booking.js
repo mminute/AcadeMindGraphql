@@ -1,6 +1,6 @@
 const Booking = require('../../Models/booking');
 const Event = require('../../Models/event');
-const { transformBooking } = require('./merge');
+const { transformBooking, transformEvent } = require('./merge');
 
 module.exports = {
   bookings: async (_, req) => {
@@ -9,7 +9,7 @@ module.exports = {
     }
 
     try {
-      const bookings = await Booking.find();
+      const bookings = await Booking.find({ user: req.userId });
       return bookings.map(bk => transformBooking(bk));
     } catch (err) {
       throw err;
