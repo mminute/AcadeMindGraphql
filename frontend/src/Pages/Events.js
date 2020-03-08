@@ -9,6 +9,8 @@ import './Events.css'
 class EventsPage extends Component {
   static contextType = AuthContext;
 
+  isActive = true;
+
   state = {
     creating: false,
     events: [],
@@ -28,8 +30,52 @@ class EventsPage extends Component {
     this.fetchEvents();
   }
 
+  componentWillUnmount() {
+    this.isActive = false;
+  }
+
   handleBookEvent = () => {
-    console.log('handleBookEvent');
+    if (!this.context.token) {
+      this.handleCloseDetailsModal();
+      return;
+    }
+
+    const { _id } = this.state.selectedEvent;
+    const { token } = this.context;
+
+    const requestBody = {
+      query: `
+        mutation {
+          bookEvent(eventId: "${_id}") {
+            _id
+            createdAt
+            updatedAt
+          }
+        }
+      `,
+    };
+
+    fetch('http://localhost:8000/graphql', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+    }).then(res => {
+      if (![200, 201].includes(res.status)) {
+        throw new Error('Failed!', res);
+      }
+
+      return res.json();
+    })
+    .then(resData => {
+      this.handleCloseDetailsModal();
+      console.log(resData);
+    }).catch(err => {
+      this.handleCloseDetailsModal();
+      console.log(err);
+    });
   };
 
   handleCloseModal = () => {
@@ -142,12 +188,14 @@ class EventsPage extends Component {
       return res.json();
     })
     .then(resData => {
-      this.setState({ isLoading: false });
-      const events = resData.data.events;
-      this.setState({ events });
+      if (this.isActive) {
+        this.setState({ events: resData.data.events, isLoading: false });
+      }
     }).catch(err => {
-      this.setState({ isLoading: false });
-      console.log(err);
+      if (this.isActive) {
+        this.setState({ isLoading: false });
+        console.log(err);
+      }
     });
   }
 
@@ -185,7 +233,7 @@ class EventsPage extends Component {
         {selectedEvent && (
           <Backdrop>
             <Modal
-              confirmText="Book"
+              confirmText={this.context.token ? 'Book' : 'Confirm'}
               onCancel={this.handleCloseDetailsModal}
               onConfirm={this.handleBookEvent}
               title={selectedEvent.title}

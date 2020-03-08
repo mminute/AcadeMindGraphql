@@ -1,4 +1,5 @@
 const Booking = require('../../Models/booking');
+const Event = require('../../Models/event');
 const { transformBooking } = require('./merge');
 
 module.exports = {

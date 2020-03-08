@@ -98,13 +98,15 @@ class AuthPage extends Component {
     }
 
     if (this.state.formAction === 'login') {
-      this.handleSignup(email, password);
-    } else {
       this.handleLogin(email, password);
+    } else {
+      this.handleSignup(email, password);
     }
   }
 
   render() {
+    const { formAction } = this.state;
+
     return (
       <form className="auth-form" onSubmit={this.handleSubmit}>
         <div className="form-control">
@@ -117,10 +119,10 @@ class AuthPage extends Component {
         </div>
         <div className="form-actions">
           <button type="submit">
-            Submit
+            {formAction === 'login' ? 'Login' : 'Signup'}
           </button>
           <button type="button" onClick={this.handleSwitchMode}>
-            Switch to {this.state.formAction === 'signup' ? 'Signup' : 'Login'}
+            Switch to {formAction === 'login' ? 'Signup' : 'Login'}
           </button>
         </div>
       </form>
