@@ -29,7 +29,50 @@ class EventsPage extends Component {
   }
 
   handleBookEvent = () => {
-    console.log('handleBookEvent');
+    if (!this.context.token) {
+      this.handleCloseDetailsModal();
+      return;
+    }
+
+    console.log('handleBookEvent', this.state.selectedEvent);
+    const { _id } = this.state.selectedEvent;
+    const { token } = this.context;
+
+    // return null;
+
+    const requestBody = {
+      query: `
+        mutation {
+          bookEvent(eventId: "${_id}") {
+            _id
+            createdAt
+            updatedAt
+          }
+        }
+      `,
+    };
+
+    fetch('http://localhost:8000/graphql', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+    }).then(res => {
+      if (![200, 201].includes(res.status)) {
+        throw new Error('Failed!', res);
+      }
+
+      return res.json();
+    })
+    .then(resData => {
+      this.handleCloseDetailsModal();
+      console.log(resData);
+    }).catch(err => {
+      this.handleCloseDetailsModal();
+      console.log(err);
+    });
   };
 
   handleCloseModal = () => {
@@ -185,7 +228,7 @@ class EventsPage extends Component {
         {selectedEvent && (
           <Backdrop>
             <Modal
-              confirmText="Book"
+              confirmText={this.context.token ? 'Book' : 'Confirm'}
               onCancel={this.handleCloseDetailsModal}
               onConfirm={this.handleBookEvent}
               title={selectedEvent.title}
