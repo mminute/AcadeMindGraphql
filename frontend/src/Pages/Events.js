@@ -2,15 +2,18 @@ import React, { Component } from 'react';
 import Modal from '../Components/Modal';
 import Backdrop from '../Components/Backdrop';
 import AuthContext from '../context/auth-context';
+import EventList from '../Components/Events/EventList';
+import Spinner from '../Components/Spinner/Spinner';
 import './Events.css'
 
 class EventsPage extends Component {
   static contextType = AuthContext;
 
   state = {
-    // TODO: default to false
-    creating: true,
+    creating: false,
     events: [],
+    isLoading: false,
+    selectedEvent: null,
   };
 
   constructor(props) {
@@ -25,9 +28,17 @@ class EventsPage extends Component {
     this.fetchEvents();
   }
 
+  handleBookEvent = () => {
+    console.log('handleBookEvent');
+  };
+
   handleCloseModal = () => {
     this.setState({ creating: false });
   };
+
+  handleCloseDetailsModal = () => {
+    this.setState({ selectedEvent: null });
+  }
 
   handleConfirm = () => {
     const title = this.titleRef.current.value;
@@ -61,10 +72,6 @@ class EventsPage extends Component {
             description
             price
             date
-            creator {
-              _id
-              email
-            }
           }
         }
       `,
@@ -72,7 +79,6 @@ class EventsPage extends Component {
 
     const { token } = this.context;
 
-    console.log('about to submit new event...');
     fetch('http://localhost:8000/graphql', {
       method: 'POST',
       body: JSON.stringify(requestBody),
@@ -82,22 +88,28 @@ class EventsPage extends Component {
       },
     }).then(res => {
       if (![200, 201].includes(res.status)) {
-        console.log(res);
         throw new Error('Failed!');
       }
-      console.log('handleCreateEvent res.json');
       return res.json();
     })
     .then(resData => {
-      console.log('handleCreateEvent onSuccess');
-      this.fetchEvents();
+      this.setState(prevState => {
+        const existingEvents = prevState.events;
+        const newEvent = {
+          ...resData.data.createEvent,
+          creator: { _id: this.context.userId },   
+        };
+
+        return { events: [...existingEvents, newEvent] };
+      });
     }).catch(err => {
       console.log(err);
     });
   }
 
   fetchEvents() {
-    console.log('top of fetchEvents');
+    this.setState({ isLoading: true });
+
     const requestBody = {
       query: `
         query {
@@ -123,7 +135,6 @@ class EventsPage extends Component {
         'Content-Type': 'application/json',
       },
     }).then(res => {
-      console.log('fetchEvents -> got a response');
       if (![200, 201].includes(res.status)) {
         throw new Error('Failed!')
       }
@@ -131,11 +142,11 @@ class EventsPage extends Component {
       return res.json();
     })
     .then(resData => {
-      console.log('on success');
+      this.setState({ isLoading: false });
       const events = resData.data.events;
       this.setState({ events });
     }).catch(err => {
-      console.log('on error');
+      this.setState({ isLoading: false });
       console.log(err);
     });
   }
@@ -144,8 +155,15 @@ class EventsPage extends Component {
     this.setState({ creating: true });
   };
 
+  showDetailHandler = (eventId) => {
+    this.setState((prevState) => {
+      const selectedEvent = prevState.events.find(evt => evt._id === eventId);
+      return { selectedEvent };
+    });
+  };
+
   render() {
-    const { creating, events } = this.state;
+    const { creating, events, isLoading, selectedEvent } = this.state;
 
     return (
       <React.Fragment>
@@ -156,15 +174,33 @@ class EventsPage extends Component {
           </div>
         )}
 
-        <ul className="events__list">
-          {events.map((event, idx) => (
-            <li className="events__list-item" key={`event-itme-${idx}`}>{event.title}</li>
-          ))}
-        </ul>
+        {isLoading ? <Spinner /> : (
+          <EventList
+            events={events}
+            userId={this.context.userId}
+            onClick={this.showDetailHandler}
+          />
+        )}
+
+        {selectedEvent && (
+          <Backdrop>
+            <Modal
+              confirmText="Book"
+              onCancel={this.handleCloseDetailsModal}
+              onConfirm={this.handleBookEvent}
+              title={selectedEvent.title}
+            >
+              <h1>{selectedEvent.title}</h1>
+              <h2>{`$${selectedEvent.price}`} - {new Date(selectedEvent.date).toLocaleDateString()}</h2>
+              <p>{selectedEvent.description}</p>
+            </Modal>
+          </Backdrop>
+        )}
 
         {creating && (
           <Backdrop>
             <Modal
+              confirmText="Confirm"
               onCancel={this.handleCloseModal}
               onConfirm={this.handleConfirm}
               title="Hello Events"
