@@ -89,3 +89,10 @@ NavLink component adds an `active` class to link for the current route
 Set headers to allow CORS
 
 Loading spinners: https://loading.io/css/
+
+Optimizing DB interactions and roundtrips:
+When fetching events we `transformEvent` which triggers a `getUser` which makes another db query for each event we fetch.
+Not scalable for production ready applications
+
+Solution: Dataloader to batch requests- https://github.com/graphql/dataloader
+

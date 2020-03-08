@@ -1,14 +1,24 @@
+const DataLoader = require('dataloader');
 const Event = require('../../Models/event');
 const User = require('../../Models/user');
 const { toIsoDate } = require('../../helpers/date');
 
+const eventLoader = new DataLoader((eventIds) => {
+  return events(eventIds);
+});
+
+const userLoader = new DataLoader((userIds) => {
+  return User.find({ _id: {$in: userIds} });
+});
+
 const getUser = async userId => {
   try {
-    const usr = await User.findById(userId);
+    // userId is actually an object -> so JS recognizes it as unique.  Convert to a string to deduplicate entries within the userLoader
+    const usr = await userLoader.load(userId.toString());
 
     return {
       ...usr._doc,
-      createdEvents: events(usr._doc.createdEvents),
+      createdEvents: eventLoader.loadMany(usr._doc.createdEvents),
     }
   } catch (err) {
     throw err;
@@ -27,8 +37,8 @@ const events = async eventIds => {
 
 const singleEvent = async eventId => {
   try {
-    const event = await Event.findById(eventId);
-    return transformEvent(event);
+    const event = await eventLoader.load(eventId.toString());
+    return event;
   } catch (err) {
     throw err;
   }
