@@ -34,11 +34,8 @@ class EventsPage extends Component {
       return;
     }
 
-    console.log('handleBookEvent', this.state.selectedEvent);
     const { _id } = this.state.selectedEvent;
     const { token } = this.context;
-
-    // return null;
 
     const requestBody = {
       query: `
