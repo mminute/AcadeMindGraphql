@@ -9,6 +9,8 @@ import './Events.css'
 class EventsPage extends Component {
   static contextType = AuthContext;
 
+  isActive = true;
+
   state = {
     creating: false,
     events: [],
@@ -26,6 +28,10 @@ class EventsPage extends Component {
 
   componentDidMount() {
     this.fetchEvents();
+  }
+
+  componentWillUnmount() {
+    this.isActive = false;
   }
 
   handleBookEvent = () => {
@@ -182,12 +188,14 @@ class EventsPage extends Component {
       return res.json();
     })
     .then(resData => {
-      this.setState({ isLoading: false });
-      const events = resData.data.events;
-      this.setState({ events });
+      if (this.isActive) {
+        this.setState({ events: resData.data.events, isLoading: false });
+      }
     }).catch(err => {
-      this.setState({ isLoading: false });
-      console.log(err);
+      if (this.isActive) {
+        this.setState({ isLoading: false });
+        console.log(err);
+      }
     });
   }
 
