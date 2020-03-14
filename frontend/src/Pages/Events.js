@@ -109,10 +109,11 @@ class EventsPage extends Component {
   };
 
   handleCreateEvent({ date, description, price, title }) {
+    console.log(price, typeof price);
     const requestBody = {
       query: `
-        mutation {
-          createEvent(eventInput: {date: "${date}", description: "${description}", price: ${price}, title: "${title}"}) {
+        mutation CreateEvent($date: String!, $description: String!, $price: Float!, $title: String!) {
+          createEvent(eventInput: {date: $date, description: $description, price: $price, title: $title}) {
             _id
             title
             description
@@ -121,6 +122,12 @@ class EventsPage extends Component {
           }
         }
       `,
+      variables: {
+        date,
+        description,
+        price: parseFloat(price),
+        title,
+      }
     };
 
     const { token } = this.context;

@@ -18,7 +18,7 @@ const getUser = async userId => {
 
     return {
       ...usr._doc,
-      createdEvents: eventLoader.loadMany(usr._doc.createdEvents),
+      createdEvents: () => eventLoader.loadMany(usr._doc.createdEvents),
     }
   } catch (err) {
     throw err;
