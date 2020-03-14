@@ -96,3 +96,27 @@ Not scalable for production ready applications
 
 Solution: Dataloader to batch requests- https://github.com/graphql/dataloader
 
+In this tutorial we MANUALLY make HTTP post requests to our backend
+For real projects use libraries like:
+- Apollo Client: https://www.apollographql.com/docs/react/
+- Apollo Server for backend: https://www.apollographql.com/docs/apollo-server/
+
+Better way of injecting data into queries when handling them manually:
+instead of interpolating a value into the query use a `variables object` in the request body.
+
+Give the mutation a name and identifiy the variables used (`CancelBooking($id: ID!)`) including a type for the variable
+```
+const requestBody = {
+    query: `
+        mutation CancelBooking($id: ID!) {
+            cancelBooking(bookingId: $id) {
+                _id
+                title
+            }
+        }
+    `,
+    variables: {
+        id: bookingId,
+    }
+}
+```
