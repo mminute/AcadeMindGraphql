@@ -1,15 +1,21 @@
 import React, { Component, Fragment } from 'react';
 import AuthContext from '../context/auth-context';
+import BookingsViewControl from '../Components/BookingsViewControl';
+import Chart from '../Components/Chart';
 import BookingList from '../Components/BookingList';
 import Spinner from '../Components/Spinner/Spinner';
 
 class BookingsPage extends Component {
   static contextType = AuthContext;
 
-  state = { bookings: [], isLoading: false };
+  state = { bookings: [], isLoading: false, view: 'list' };
 
   componentDidMount() {
     this.fetchBookings();
+  }
+
+  handleChangeView = (viewType) => {
+    this.setState({ view: viewType });
   }
 
   handleDeleteBooking = (bookingId) => {
@@ -69,6 +75,7 @@ class BookingsPage extends Component {
               _id
               title
               date
+              price
             }
           }
         }
@@ -100,13 +107,22 @@ class BookingsPage extends Component {
   };
 
   render() {
-    const { bookings, isLoading } = this.state;
+    const { bookings, isLoading, view } = this.state;
+
+    let contents = <Spinner />;
+    if (!isLoading) {
+      contents = view === 'list' ? (
+        <BookingList bookings={bookings} onDelete={this.handleDeleteBooking} />
+      ) : (
+        <Chart bookings={bookings} />
+      );
+    }
 
     return (
       <Fragment>
-        {isLoading ? <Spinner /> : (
-          <BookingList bookings={bookings} onDelete={this.handleDeleteBooking} />
-        )}
+        {!isLoading && <BookingsViewControl clickHandler={this.handleChangeView} currentView={view} />}
+
+        {contents}
       </Fragment>
     )
   }  

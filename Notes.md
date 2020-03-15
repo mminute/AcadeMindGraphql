@@ -120,3 +120,9 @@ const requestBody = {
     }
 }
 ```
+
+Adding a chart:
+https://www.npmjs.com/package/react-chartjs
+Looks like there is also a v2 (for chart.js 2)
+https://www.npmjs.com/package/react-chartjs-2 
+

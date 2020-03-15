@@ -12,6 +12,9 @@ export default function BookingList(props) {
             {booking.event.title} - {new Date(booking.createdAt).toLocaleDateString()}
           </div>
           <div>
+            ${booking.event.price}
+          </div>
+          <div>
             <button className="btn" onClick={() => onDelete(booking._id)}>
               Cancel
             </button>
