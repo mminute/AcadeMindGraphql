@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import Modal from '../Components/Modal';
-import Backdrop from '../Components/Backdrop';
-import AuthContext from '../context/auth-context';
-import EventList from '../Components/Events/EventList';
-import Spinner from '../Components/Spinner';
+import Modal from '../Modal';
+import Backdrop from '../Backdrop';
+import AuthContext from '../../context/auth-context';
+import EventList from './EventList';
+import Spinner from '../Spinner';
 import './Events.css'
 
 class EventsPage extends Component {
