@@ -1,5 +1,25 @@
-// import React from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
+
+const eventsQuery = gql`
+  {
+    events {
+      _id
+      title
+      description
+      date
+      price
+      creator {
+        _id
+        email
+      }
+    }
+  }
+`;
+
 
 export default function EventsFetcher({ children }) {
-  return children('helloWorld');
+  const eventsData = useQuery(eventsQuery);
+
+  return children(eventsData);
 }

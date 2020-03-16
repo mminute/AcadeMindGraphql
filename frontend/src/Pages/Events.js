@@ -5,8 +5,8 @@ import EventsFetcher from '../Components/Events/EventsFetcher';
 export default function EventsWrapper() {
   return (
     <EventsFetcher>
-      {(testing) => (
-        <Events testProp={testing} />
+      {(eventsData) => (
+        <Events eventsData={eventsData} />
       )}
     </EventsFetcher>
   );

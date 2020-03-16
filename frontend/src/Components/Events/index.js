@@ -26,8 +26,10 @@ class EventsPage extends Component {
     this.descriptionRef = React.createRef();
   }
 
-  componentDidMount() {
-    this.fetchEvents();
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.eventsData?.data?.events && !prevProps.eventsData?.data?.events) {
+      this.setState({ events: [...prevState.events, ...this.props.eventsData.data.events] })
+    }
   }
 
   componentWillUnmount() {
@@ -160,52 +162,6 @@ class EventsPage extends Component {
     });
   }
 
-  fetchEvents() {
-    this.setState({ isLoading: true });
-
-    const requestBody = {
-      query: `
-        query {
-          events {
-            _id
-            title
-            description
-            date
-            price
-            creator {
-              _id
-              email
-            }
-          }
-        }
-      `,
-    };
-
-    fetch('http://localhost:8000/graphql', {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(res => {
-      if (![200, 201].includes(res.status)) {
-        throw new Error('Failed!')
-      }
-
-      return res.json();
-    })
-    .then(resData => {
-      if (this.isActive) {
-        this.setState({ events: resData.data.events, isLoading: false });
-      }
-    }).catch(err => {
-      if (this.isActive) {
-        this.setState({ isLoading: false });
-        console.log(err);
-      }
-    });
-  }
-
   startCreateEventHandler = () => {
     this.setState({ creating: true });
   };
@@ -218,8 +174,6 @@ class EventsPage extends Component {
   };
 
   render() {
-    console.log(this.props.testProp);
-
     const { creating, events, isLoading, selectedEvent } = this.state;
 
     return (
