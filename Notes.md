@@ -126,3 +126,91 @@ https://www.npmjs.com/package/react-chartjs
 Looks like there is also a v2 (for chart.js 2)
 https://www.npmjs.com/package/react-chartjs-2 
 
+
+
+========================================================================================================================
+========================================================================================================================
+========================================================================================================================
+
+POST TUTORIAL!
+Trying to add Apollo Client (React) to this application
+https://www.apollographql.com/docs/react/get-started/
+`npm install apollo-boost @apollo/react-hooks graphql`
+
+In your frontend `index.js` file create an Apollo Client:
+```
+import ApolloClient from 'apollo-boost';
+
+const client = new ApolloClient({
+  uri: 'https://48p1r2roz4.sse.codesandbox.io',
+});
+```
+
+Test that you can query your endpoint from that same `index.js` file:
+```
+import { gql } from "apollo-boost";
+
+...
+
+client
+  .query({
+    query: gql`
+      {
+        rates(currency: "USD") {
+          currency
+        }
+      }
+    `
+  })
+  .then(result => console.log(result));
+```
+
+Connect your react components to the Apollo Client with `ApolloProvider`.
+It places the ApolloClient in React context so that you can access it from anywhere in the app
+```
+import React from 'react';
+import { render } from 'react-dom';
+
+import { ApolloProvider } from '@apollo/react-hooks';
+
+const App = () => (
+  <ApolloProvider client={client}>
+    <div>
+      <h2>My first Apollo app 🚀</h2>
+    </div>
+  </ApolloProvider>
+);
+
+render(<App />, document.getElementById('root'));
+```
+
+Use `useQuery` hook from `@apollo/react-hooks` to make a query to your endpoint
+```
+import React from 'react';
+import { useQuery } from '@apollo/react-hooks';
+import { gql } from 'apollo-boost';
+
+const EXCHANGE_RATES = gql`
+  {
+    rates(currency: "USD") {
+      currency
+      rate
+    }
+  }
+`;
+
+function ExchangeRates() {
+  const { loading, error, data } = useQuery(EXCHANGE_RATES);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+
+  return data.rates.map(({ currency, rate }) => (
+    <div key={currency}>
+      <p>
+        {currency}: {rate}
+      </p>
+    </div>
+  ));
+}
+```
