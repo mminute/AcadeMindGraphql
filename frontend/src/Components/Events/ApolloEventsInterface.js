@@ -18,7 +18,7 @@ const eventsQuery = gql`
 `;
 
 
-export default function EventsFetcher({ children }) {
+export default function ApolloEventsInterface({ children }) {
   const eventsData = useQuery(eventsQuery);
 
   return children(eventsData);

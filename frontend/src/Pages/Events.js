@@ -1,13 +1,13 @@
 import React from 'react';
 import Events from '../Components/Events';
-import EventsFetcher from '../Components/Events/EventsFetcher';
+import ApolloEventsInterface from '../Components/Events/ApolloEventsInterface';
 
 export default function EventsWrapper() {
   return (
-    <EventsFetcher>
+    <ApolloEventsInterface>
       {(eventsData) => (
         <Events eventsData={eventsData} />
       )}
-    </EventsFetcher>
+    </ApolloEventsInterface>
   );
 }
