@@ -3,7 +3,7 @@ import AuthContext from '../context/auth-context';
 import BookingsViewControl from '../Components/BookingsViewControl';
 import Chart from '../Components/Chart';
 import BookingList from '../Components/BookingList';
-import Spinner from '../Components/Spinner/Spinner';
+import Spinner from '../Components/Spinner';
 
 class BookingsPage extends Component {
   static contextType = AuthContext;
