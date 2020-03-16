@@ -218,6 +218,8 @@ class EventsPage extends Component {
   };
 
   render() {
+    console.log(this.props.testProp);
+
     const { creating, events, isLoading, selectedEvent } = this.state;
 
     return (
