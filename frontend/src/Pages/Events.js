@@ -3,7 +3,7 @@ import Modal from '../Components/Modal';
 import Backdrop from '../Components/Backdrop';
 import AuthContext from '../context/auth-context';
 import EventList from '../Components/Events/EventList';
-import Spinner from '../Components/Spinner/Spinner';
+import Spinner from '../Components/Spinner';
 import './Events.css'
 
 class EventsPage extends Component {
