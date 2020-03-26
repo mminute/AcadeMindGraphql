@@ -5,8 +5,11 @@ import ApolloEventsInterface from '../Components/Events/ApolloEventsInterface';
 export default function EventsWrapper() {
   return (
     <ApolloEventsInterface>
-      {(eventsData) => (
-        <Events eventsData={eventsData} />
+      {({ createEventMutation, eventsData }) => (
+        <Events
+          createEventMutation={createEventMutation}
+          eventsData={eventsData}
+        />
       )}
     </ApolloEventsInterface>
   );

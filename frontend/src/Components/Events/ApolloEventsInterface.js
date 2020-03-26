@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 
 const eventsQuery = gql`
@@ -17,9 +17,38 @@ const eventsQuery = gql`
   }
 `;
 
+const createEventMutation = gql`
+  mutation CreateEvent($date: String!, $description: String!, $price: Float!, $title: String!) {
+    createEvent(eventInput: {date: $date, description: $description, price: $price, title: $title}) {
+      _id
+      title
+      description
+      price
+      date
+    }
+  }
+`;
+
 
 export default function ApolloEventsInterface({ children }) {
   const eventsData = useQuery(eventsQuery);
 
-  return children(eventsData);
+  const [
+    createEventFn,
+    {
+      data: createEventData,
+      loading: mutationLoading,
+      error: mutationError,
+    },
+  ] = useMutation(createEventMutation);
+
+  return children({
+    createEventMutation: {
+      createEventData,
+      mutationError,
+      mutationLoading,
+      runMutation: createEventFn,
+    },
+    eventsData,
+  });
 }

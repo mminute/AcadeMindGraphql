@@ -214,3 +214,8 @@ function ExchangeRates() {
   ));
 }
 ```
+
+To set headers for authenticating mutations:
+https://www.apollographql.com/docs/react/networking/authentication/#header
+npm install apollo-link-http
+npm install apollo-link-context

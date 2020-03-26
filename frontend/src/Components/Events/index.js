@@ -111,54 +111,30 @@ class EventsPage extends Component {
   };
 
   handleCreateEvent({ date, description, price, title }) {
-    console.log(price, typeof price);
-    const requestBody = {
-      query: `
-        mutation CreateEvent($date: String!, $description: String!, $price: Float!, $title: String!) {
-          createEvent(eventInput: {date: $date, description: $description, price: $price, title: $title}) {
-            _id
-            title
-            description
-            price
-            date
-          }
-        }
-      `,
-      variables: {
-        date,
-        description,
-        price: parseFloat(price),
-        title,
-      }
-    };
+    const { createEventMutation } = this.props;
 
-    const { token } = this.context;
+    const onUpdate = (cache, result) => {
+      const { data: { createEvent } } = result;
 
-    fetch('http://localhost:8000/graphql', {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token,
-      },
-    }).then(res => {
-      if (![200, 201].includes(res.status)) {
-        throw new Error('Failed!');
-      }
-      return res.json();
-    })
-    .then(resData => {
       this.setState(prevState => {
         const existingEvents = prevState.events;
         const newEvent = {
-          ...resData.data.createEvent,
+          ...createEvent,
           creator: { _id: this.context.userId },   
         };
 
         return { events: [...existingEvents, newEvent] };
       });
-    }).catch(err => {
-      console.log(err);
+    };
+
+    createEventMutation.runMutation({
+      variables: {
+        date,
+        description,
+        price: parseFloat(price),
+        title,
+      },
+      update: onUpdate,
     });
   }
 
